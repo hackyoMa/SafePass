@@ -1,0 +1,6 @@
+server:
+  port: 8080
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://root:3J44H1aYkYGe8mzY@hackyo-pyaog.azure.mongodb.net/safepass?retryWrites=true

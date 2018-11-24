@@ -1,0 +1,47 @@
+.searchForm {
+  text-align: center;
+  margin-top: 22px;
+}
+
+.pagination {
+  text-align: center;
+  margin-top: 22px;
+}
+
+.infoBorder {
+  border: 1px solid #ebeef5;
+  background-color: #fff;
+  -webkit-box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+  color: #303133;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.infoLabel {
+  margin-right: 5px;
+}
+
+.addBtnDiv {
+  padding-top: 22px;
+}
+
+.addBtn {
+  width: 100%;
+}
+
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+
+.addTag {
+  width: 90px;
+  height: 32px;
+}
+
+.addTagDiv {
+  display: inline-block;
+  width: 90px;
+  height: 32px;
+  margin-left: 10px;
+}
