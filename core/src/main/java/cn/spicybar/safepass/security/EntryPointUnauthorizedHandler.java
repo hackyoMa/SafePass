@@ -22,7 +22,7 @@ public class EntryPointUnauthorizedHandler implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) {
         String originHeader = request.getHeader("Origin");
-        String[] allowOrigins = {"http://localhost:8070", "https://safepass.spicybar.cn"};
+        String[] allowOrigins = {"https://api.spicybar.cn", "https://safepass.spicybar.cn"};
         Set<String> allowOriginsSet = new HashSet<>(Arrays.asList(allowOrigins));
         if (allowOriginsSet.contains(originHeader)) {
             response.setHeader("Access-Control-Allow-Origin", originHeader);

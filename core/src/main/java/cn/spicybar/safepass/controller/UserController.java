@@ -25,7 +25,7 @@ import javax.servlet.http.HttpSession;
  * @author hackyo
  * Created on 2017/12/3 11:53.
  */
-@CrossOrigin(origins = {"http://localhost:8070", "https://safepass.spicybar.cn"}, allowCredentials = "true")
+@CrossOrigin(origins = {"https://api.spicybar.cn", "https://safepass.spicybar.cn"}, allowCredentials = "true")
 @RestController
 @RequestMapping(value = "/user", produces = "text/html;charset=UTF-8")
 public class UserController {
