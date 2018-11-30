@@ -33,7 +33,6 @@ public class GloablExceptionHandler {
         List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
         Map<String, String> errorMap = new HashMap<>(fieldErrors.size());
         for (FieldError fieldError : fieldErrors) {
-            System.out.println("666" + fieldError.getDefaultMessage());
             errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
         return new ObjectMapper().writeValueAsString(errorMap);

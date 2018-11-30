@@ -22,7 +22,7 @@ import java.util.Map;
  * @author hackyo
  * Created on 2017/12/28 22:41.
  */
-@CrossOrigin(origins = {"https://safepass.spicybar.cn"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:8070", "https://safepass.spicybar.cn"}, allowCredentials = "true")
 @RestController
 @RequestMapping(value = "/info", produces = "text/html;charset=UTF-8")
 public class InfoController {

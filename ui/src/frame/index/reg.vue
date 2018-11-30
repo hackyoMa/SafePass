@@ -10,15 +10,7 @@
       <el-input type="password" v-model="regForm.password" auto-complete="off" placeholder="请设置密码" clearable></el-input>
     </el-form-item>
     <el-form-item prop="checkPassword">
-      <el-input type="password" v-model="regForm.checkPassword" auto-complete="off" placeholder="请再次输入密码" clearable></el-input>
-    </el-form-item>
-    <el-form-item prop="verifyCode">
-      <el-input type="text" v-model="regForm.verifyCode" @keyup.enter.native="submitForm('regForm')" auto-complete="off" placeholder="请输入验证码" clearable>
-        <template slot="append">
-          <div class="verifyCodeSize"></div>
-          <img :src="verifyCodeImg" class="verifyCodeImg" alt="验证码图片" @click="getVerifyCode()"/>
-        </template>
-      </el-input>
+      <el-input type="password" v-model="regForm.checkPassword" @keyup.enter.native="submitForm('regForm')" auto-complete="off" placeholder="请再次输入密码" clearable></el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" class="loginBtn" @click="submitForm('regForm')">注册</el-button>
@@ -85,30 +77,12 @@
           callback();
         }
       };
-      let validateVerifyCode = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入验证码'));
-        } else if (value.length !== 4) {
-          callback(new Error('验证码错误'));
-        } else {
-          this.$api.get('/user/validateVerifyCode', {
-            'verifyCode': value
-          }, res => {
-            if (res.data === true) {
-              callback();
-            } else {
-              callback(new Error('验证码错误'));
-            }
-          });
-        }
-      };
       return {
         regForm: {
           username: '',
           nickname: '',
           password: '',
-          checkPassword: '',
-          verifyCode: '',
+          checkPassword: ''
         },
         regRules: {
           username: [
@@ -122,38 +96,23 @@
           ],
           checkPassword: [
             {validator: validateCheckPassword, trigger: 'blur'}
-          ],
-          verifyCode: [
-            {validator: validateVerifyCode, trigger: 'blur'}
           ]
-        },
-        verifyCodeImg: ''
+        }
       };
     },
-    mounted() {
-      this.getVerifyCode();
-    },
     methods: {
-      getVerifyCode() {
-        this.$api.get('/user/getVerifyCode', {}, res => {
-          this.verifyCodeImg = 'data:image/png;base64,' + res.data;
-        });
-      },
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
             this.$api.post('/user/register', {
               'username': this.regForm.username,
               'nickname': this.regForm.nickname,
-              'password': this.regForm.password,
-              "verifyCode": this.regForm.verifyCode
+              'password': this.regForm.password
             }, res => {
               let data = res.data;
               if (data === 'success') {
                 this.$message.success('注册成功，请登录');
                 this.$router.push('login');
-              } else if (data === 'verifyCodeError') {
-                this.$message.error('验证码错误');
               } else if (data === 'usernameExist') {
                 this.$message.warning('邮箱或手机号已被注册');
               } else {
@@ -167,7 +126,6 @@
                   this.$message.warning('密码出错');
                 }
               }
-              this.getVerifyCode();
             });
           } else {
             return false;

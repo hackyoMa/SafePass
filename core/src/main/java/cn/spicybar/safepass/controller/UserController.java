@@ -4,7 +4,6 @@ import cn.spicybar.safepass.domain.User;
 import cn.spicybar.safepass.security.JwtUser;
 import cn.spicybar.safepass.service.IUserService;
 import cn.spicybar.safepass.utils.GetIp;
-import cn.spicybar.safepass.utils.GetVerifyCode;
 import cn.spicybar.safepass.utils.ParameterException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 
 /**
@@ -25,20 +23,18 @@ import javax.servlet.http.HttpSession;
  * @author hackyo
  * Created on 2017/12/3 11:53.
  */
-@CrossOrigin(origins = {"https://safepass.spicybar.cn"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:8070", "https://safepass.spicybar.cn"}, allowCredentials = "true")
 @RestController
 @RequestMapping(value = "/user", produces = "text/html;charset=UTF-8")
 public class UserController {
 
     private HttpServletRequest request;
-    private HttpSession session;
     private IUserService userService;
     private ObjectMapper mapper;
 
     @Autowired
-    public UserController(HttpServletRequest request, HttpSession session, IUserService userService) {
+    public UserController(HttpServletRequest request, IUserService userService) {
         this.request = request;
-        this.session = session;
         this.userService = userService;
         this.mapper = new ObjectMapper();
     }
@@ -50,13 +46,8 @@ public class UserController {
      * @param password 密码
      * @return 操作结果
      */
-    @PostMapping(value = "/login", params = {"username", "password", "verifyCode"})
-    public String login(String username, String password, String verifyCode) throws JsonProcessingException {
-        String trulyVerifyCode = (String) session.getAttribute("verifyCode");
-        session.removeAttribute("verifyCode");
-        if (!verifyCode.toLowerCase().equals(trulyVerifyCode)) {
-            return mapper.writeValueAsString("verifyCodeError");
-        }
+    @PostMapping(value = "/login", params = {"username", "password"})
+    public String login(String username, String password) throws JsonProcessingException {
         return mapper.writeValueAsString(userService.login(username, password, GetIp.getUserIp(request)));
     }
 
@@ -67,13 +58,8 @@ public class UserController {
      * @param bindingResult 验证用户信息
      * @return 操作结果
      */
-    @PostMapping(value = "/register", params = {"username", "nickname", "password", "verifyCode"})
-    public String register(@Validated User user, BindingResult bindingResult, String verifyCode) throws JsonProcessingException {
-        String trulyVerifyCode = (String) session.getAttribute("verifyCode");
-        session.removeAttribute("verifyCode");
-        if (!verifyCode.toLowerCase().equals(trulyVerifyCode)) {
-            return mapper.writeValueAsString("verifyCodeError");
-        }
+    @PostMapping(value = "/register", params = {"username", "nickname", "password"})
+    public String register(@Validated User user, BindingResult bindingResult) throws JsonProcessingException {
         String returnValue;
         if (bindingResult.hasErrors()) {
             throw new ParameterException(bindingResult);
@@ -93,34 +79,6 @@ public class UserController {
     @GetMapping(value = "/usernameExists", params = {"username"})
     public String usernameExists(String username) throws JsonProcessingException {
         return mapper.writeValueAsString(userService.usernameExists(username));
-    }
-
-    /**
-     * 获取验证码
-     *
-     * @return 验证码图片
-     */
-    @GetMapping(value = "/getVerifyCode")
-    public String getVerifyCode() throws JsonProcessingException {
-        String verifyCode = GetVerifyCode.getVerifyCodeNum();
-        String verifyCodeImg = GetVerifyCode.getVerifyCodeImg(verifyCode);
-        session.setAttribute("verifyCode", verifyCode.toLowerCase());
-        return mapper.writeValueAsString(verifyCodeImg);
-    }
-
-    /**
-     * 验证验证码
-     *
-     * @param verifyCode 验证码
-     * @return 是否正确
-     */
-    @GetMapping(value = "/validateVerifyCode", params = {"verifyCode"})
-    public String validateVerifyCode(String verifyCode) throws JsonProcessingException {
-        String trulyVerifyCode = (String) session.getAttribute("verifyCode");
-        if (verifyCode.toLowerCase().equals(trulyVerifyCode)) {
-            return mapper.writeValueAsString(true);
-        }
-        return mapper.writeValueAsString(false);
     }
 
     /**

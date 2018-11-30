@@ -22,7 +22,7 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e) {
         String originHeader = request.getHeader("Origin");
-        String[] allowOrigins = {"https://safepass.spicybar.cn"};
+        String[] allowOrigins = {"http://localhost:8070", "https://safepass.spicybar.cn"};
         Set<String> allowOriginsSet = new HashSet<>(Arrays.asList(allowOrigins));
         if (allowOriginsSet.contains(originHeader)) {
             response.setHeader("Access-Control-Allow-Origin", originHeader);
